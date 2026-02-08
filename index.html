@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Definitely Not a Trap</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:"Poppins",sans-serif;
+}
+
+body{
+    height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#ffd6e7,#e7d8ff);
+    transition:background 0.8s ease;
+}
+
+/* CARD */
+.card{
+    text-align:center;
+    padding:40px;
+    border-radius:20px;
+    background:white;
+    box-shadow:0 10px 25px rgba(0,0,0,0.15);
+    max-width:420px;
+    width:90%;
+    transition:all .7s ease;
+}
+
+h1{
+    font-weight:600;
+    margin-bottom:15px;
+}
+
+p{
+    opacity:.7;
+    margin-bottom:25px;
+}
+
+/* BUTTONS */
+button{
+    padding:12px 25px;
+    border:none;
+    border-radius:30px;
+    font-size:16px;
+    cursor:pointer;
+    transition:all .3s ease;
+    margin:10px;
+}
+
+.primary{
+    background:#ff5c8a;
+    color:white;
+    box-shadow:0 5px 15px rgba(255,92,138,.4);
+}
+
+.primary:hover{
+    transform:scale(1.07);
+}
+
+.secondary{
+    background:#f1f1f1;
+}
+
+.hidden{
+    display:none;
+}
+
+/* MESSAGE */
+.message{
+    margin-top:20px;
+    opacity:0;
+    transition:opacity .6s ease;
+}
+
+.show{
+    opacity:1;
+}
+
+/* CONFETTI */
+.confetti{
+    position:fixed;
+    width:8px;
+    height:8px;
+    top:-10px;
+    animation:fall linear forwards;
+}
+
+@keyframes fall{
+    to{
+        transform:translateY(110vh) rotate(720deg);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="card" id="card">
+
+    <!-- 404 SCREEN -->
+    <div id="errorScreen">
+        <h1>404</h1>
+        <p>Page Not Found... but maybe fate brought you here 💫</p>
+        <button class="primary" onclick="showValentine()">Refresh</button>
+    </div>
+
+    <!-- VALENTINE SCREEN -->
+    <div id="valentineScreen" class="hidden">
+        <h1 id="emoji">💖</h1>
+        <h1>Will you be my Valentine?</h1>
+
+        <div id="buttons">
+            <button class="primary" onclick="yesClicked()">YES</button>
+            <button class="secondary" id="noBtn">NO</button>
+        </div>
+
+        <div class="message" id="message">
+            <p><b>By clicking YES you agree to:</b></p>
+            <p>• Unlimited cuddles<br>
+               • Lifetime supply of bad puns<br>
+               • Mutual pizza stealing rights<br>
+               <b>Effective immediately! 🚀</b>
+            </p>
+        </div>
+    </div>
+
+</div>
+
+<script>
+
+const noBtn = document.getElementById("noBtn");
+let noClicks = 0;
+
+/* SWITCH SCREEN */
+function showValentine(){
+    document.getElementById("errorScreen").classList.add("hidden");
+    document.getElementById("valentineScreen").classList.remove("hidden");
+}
+
+/* YES CLICK */
+function yesClicked(){
+    const message = document.getElementById("message");
+    message.classList.add("show");
+
+    setTimeout(()=>{
+        document.getElementById("buttons").style.opacity="0";
+    },1000);
+
+    startConfetti();
+}
+
+/* NO BUTTON CHAOS */
+noBtn.addEventListener("mouseover",moveNo);
+noBtn.addEventListener("click",moveNo);
+
+function moveNo(){
+
+    noClicks++;
+
+    /* change background gradient */
+    const colors=[
+        ["#ffd6e7","#e7d8ff"],
+        ["#d4fc79","#96e6a1"],
+        ["#ffecd2","#fcb69f"],
+        ["#a18cd1","#fbc2eb"],
+        ["#fad0c4","#ffd1ff"]
+    ];
+
+    const c = colors[Math.floor(Math.random()*colors.length)];
+    document.body.style.background = `linear-gradient(135deg, ${c[0]}, ${c[1]})`;
+
+
+
+    /* emoji change after 2 clicks */
+    if(noClicks>=2){
+        document.getElementById("emoji").textContent="😭";
+    }
+
+    /* random position */
+    const x=Math.random()*(window.innerWidth-120);
+    const y=Math.random()*(window.innerHeight-60);
+
+    noBtn.style.position="fixed";
+    noBtn.style.left=x+"px";
+    noBtn.style.top=y+"px";
+}
+
+/* CONFETTI */
+function startConfetti(){
+
+    const duration=5000;
+    const end=Date.now()+duration;
+
+    const interval=setInterval(()=>{
+
+        for(let i=0;i<12;i++){
+            const conf=document.createElement("div");
+            conf.className="confetti";
+            conf.style.left=Math.random()*100+"vw";
+            conf.style.background = `hsl(${Math.random() * 360}, 100%, 70%)`;
+            conf.style.animationDuration=(Math.random()*3+2)+"s";
+            document.body.appendChild(conf);
+
+            setTimeout(()=>conf.remove(),4000);
+        }
+
+        if(Date.now()>end){
+            clearInterval(interval);
+        }
+
+    },150);
+}
+</script>
+
+</body>
+</html>
